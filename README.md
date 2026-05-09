@@ -1,118 +1,124 @@
-This repository contains a complete data-processing pipeline for analyzing emission spectra obtained from Laser-Induced Breakdown Spectroscopy (LIBS).
-The objective of this pipeline is to transform raw spectral intensity measurements into clean, baseline-corrected, peak-identified spectra, and finally match detected peaks to known atomic emission lines.
-The workflow is designed for research environments where multiple spectra must be averaged, smoothed, corrected, and interpreted reliably.
+# Advanced Optical & Plasma Spectroscopy Analysis Suite
+
+This repository contains a high-performance, Python-based data processing pipeline designed for advanced optical physics and spectroscopy. It features two primary analytical engines: 
+1. **Quantum Interference Analysis (Fabry-Pérot)**
+2. **Multi-Spectral Emission Analysis (LIBS)**
+
+The objective of this suite is to transform raw experimental sensor data—ranging from 2D interference matrices to noisy multi-file 1D spectra—into mathematically pristine, baseline-corrected, and physically quantifiable measurements.
 
 
-Overview
-Laser-Induced Breakdown Spectroscopy produces spectra consisting of:
-•	sharp atomic emission lines,
-•	superimposed on a large, slowly-varying plasma continuum,
-•	with additional noise from detectors and background light.
-
-This pipeline performs the following steps:
-	1.	Load multiple raw spectra from CSV files.
-	2.	Interpolate all spectra onto a unified master wavelength axis.
-	3.	Average all spectra to enhance signal-to-noise ratio.
-	4.	Apply Savitzky–Golay smoothing to reduce high-frequency noise.
-	5.	Estimate and subtract a median-filtered baseline.
-	6.	Detect spectral peaks using scipy.signal.find_peaks.
-	7.	Match detected peaks to known atomic emission wavelengths from a reference table.
-	8.	Report identified elements in the sample.
+=========================================================================
 
 
+## 📁 Repository Structure
 
-Features
-	•	Supports any number of input spectra.
-	•	Automatically aligns spectra of different lengths or wavelength steps.
-	•	Fully vectorized using NumPy for performance.
-	•	Configurable smoothing and baseline parameters.
-	•	Robust peak detection with intensity and distance thresholds.
-	•	Referencing against a customizable emission line database (NIST-style table).
-
-
-
-Data Requirements
-Each input CSV file must contain two columns: wavelength, intensity
-with:
-•	wavelength in nanometers
-•	intensity in arbitrary units
-
-Place all files inside a directory named: Datas/
-Structure Example:
-Spectrometer Analysis/
-│── min.py
-│── specline.csv
-│── Datas/
-│     ├── data1.csv
-│     ├── data2.csv
-│     ├── data3.csv
-│     └── data4.csv
+Optical-Spectroscopy-Suite/
+│── README.md
+│
+├── Fabry_Perot_Analysis/
+│   ├── Fabry_Perot_Extraction.ipynb
+│   ├── sip_decoder.py
+│ 	├── center.py
+│   └── Lab_Data
+│
+└── LIBS_Spectral_Analysis/
+    ├── main.ipynb
+    ├── specline.csv (NIST Reference Database)
+    └── Datas/
+        ├── data1.csv
+        ├── data2.csv
+        └── data3.csv
 
 
+=======================================================================
 
-Reference Line Database
-The specline.csv file contains known spectral transitions with the format:
-element,ion,wavelength
-Fe,I,248.327
-Mg,II,279.553
-Na,I,589.592
-...
+🔬 Engine 1: Fabry-Perot Quantum Interference.
+Directory: /Fabry_Perot_Analysis
 
-This allows the script to identify elements present in the sample by comparing detected peak wavelengths to tabulated atomic transitions.
+This module extracts the Free Spectral Range (FSR) and physical absorption data from 2D Fabry-Pérot interferometer captures. It converts rigid, flawed digital pixels into a mathematically continuous quantum profile.
+
+Core Mathematical Features:
+
+1) Inverse Mapping (Ray Casting): Calculates exact Cartesian-to-Polar geometry for every pixel simultaneously to eliminate spatial sampling gaps.
+
+2) Polar Wedge Masking: Isolates specific angular slices of the interference rings to bypass asymmetrical sensor noise.
+
+3) Sub-Pixel Interpolation (Fractional Binning): Annihilates spatial aliasing (quantization error) by splitting photon intensity across fractional decimal radii.
+
+4) Azimuthal Integration: Collapses the 2D matrix into a 1D intensity wave.
+
+5) Inverted Peak Hunting: Utilizes Savitzky-Golay filtering and inverted topographical algorithms to lock onto dark atomic absorption lines rather than emission peaks.
+
+=======================================================================
+
+🔥 Engine 2: Laser-Induced Breakdown Spectroscopy (LIBS)
+Directory: /LIBS_Spectral_Analysis
+
+This pipeline processes raw emission spectra obtained from LIBS. It isolates sharp atomic emission lines superimposed on a large, slowly-varying plasma continuum, matching the isolated peaks to known atomic elements.
+
+Workflow & Methodology:
+
+1) Data Ingestion & Interpolation: Loads multiple raw spectra (wavelength vs. intensity) and maps them onto a unified master wavelength axis using NumPy vectorization.
+
+2) Signal-to-Noise Enhancement: Stacks and averages all interpolated spectra to suppress random detector shot noise.
+
+3) High-Frequency Smoothing: Applies a Savitzky–Golay filter (51-point window, 3rd-order polynomial) to iron out thermal noise without distorting peak geometries.
+
+4) Plasma Continuum Removal (Baseline Correction): Deploys a broad median filter to estimate the underlying thermal plasma continuum, subtracting it to isolate true atomic emission peaks.
+
+5) Elemental Identification: Cross-references detected peaks against a customizable NIST-style emission line database (specline.csv) within a strictly defined nanometer tolerance (Default: 0.3nm).
 
 
+=======================================================================
 
-Method Summary
 
-Interpolation
-All spectra are mapped onto the wavelength axis of the first file to ensure uniform point-to-point comparison.
+## ⚙️ Dependencies & Installation
 
-Averaging
-Stacked spectra are averaged along the intensity dimension, improving signal clarity while suppressing random noise.
+  This suite is entirely vectorized for rapid computational execution and relies on the Jupyter environment for interactive data visualization. Ensure the following scientific libraries are installed:
 
-Smoothing
-A Savitzky–Golay filter (51-point window, 3rd-order polynomial) is applied to suppress high-frequency fluctuations without distorting peak shape.
+```bash
+pip install numpy pandas matplotlib scipy jupyter
+```
 
-Baseline Correction
-A broad median filter removes the slow plasma continuum. Subtracting this baseline isolates true emission peaks.
-
-Peak Detection
-Peaks are extracted based on:
-•	minimum height,
-•	minimum separation,
-•	corrected intensity.
-
-Spectral Identification
-Each detected peak is compared to reference wavelengths. If the difference is below the tolerance (default: 0.3 nm), the corresponding element and ionization state are reported.
+=======================================================================
 
 
 
-Running the Analysis
-Run: python3 min.py
+🚀 Execution Guide
+Because these analytical engines are built as Jupyter Notebooks (.ipynb), they are designed for interactive, cell-by-cell execution rather than background terminal processing. You can copy paste the cells in a .py file and run python3 ____.py if you prefer it.
 
-The script automatically:
-•	processes all spectra in the dataset,
-•	produces intermediate and final corrected spectra,
-•	prints detected elements with wavelengths.
+  Step 1: Launch the Environment
+  Open your terminal, navigate to the main Optical-Spectroscopy-Suite repository folder, and start the Jupyter server:
 
-Dependencies
-	•	Python 3.8+
-	•	NumPy
-	•	Pandas
-	•	Matplotlib
-	•	SciPy
-
-Install via: pip install numpy pandas matplotlib scipy
-
-Applications
-This analysis pipeline is suitable for:
-	•	LIBS elemental analysis
-	•	Plasma diagnostics
-	•	Combustion studies
-	•	Emission spectroscopy
-	•	Academic laboratory work
-	•	Automated material identification
+  Bash
+  jupyter notebook
 
 
-License
-This project is open for academic and research use.
+
+  Step 2: Run the Fabry-Pérot Analysis
+
+  In the Jupyter browser, navigate into the Fabry_Perot_Analysis/ folder.
+
+  Open the cadmium_absorption.ipynb notebook.
+
+  Ensure your .sip file is in the same folder.
+
+  Run the cells sequentially (Shift + Enter) to process the matrix and render the FSR graphs.
+
+
+
+  Step 3: Run the LIBS Analysis
+
+  In the Jupyter browser, navigate into the LIBS_Spectral_Analysis/ folder.
+
+  Open the main.ipynb notebook.
+
+  Ensure all your .csv spectral files are placed inside the Datas/ subfolder.
+
+  Run the cells sequentially (Shift + Enter) to process the baseline corrections and output the elemental identification.
+
+
+
+
+
+Developed for academic research, plasma diagnostics, and advanced physics applications.

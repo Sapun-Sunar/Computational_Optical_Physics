@@ -12,22 +12,21 @@ The objective of this suite is to transform raw experimental sensor data—rangi
 
 ## 📁 Repository Structure
 
-Optical-Spectroscopy-Suite/
-│── README.md
-│
-├── Fabry_Perot_Analysis/
-│   ├── Fabry_Perot_Extraction.ipynb
-│   ├── sip_decoder.py
-│ 	├── center.py
-│   └── Lab_Data
-│
-└── LIBS_Spectral_Analysis/
-    ├── main.ipynb
-    ├── specline.csv (NIST Reference Database)
-    └── Datas/
-        ├── data1.csv
-        ├── data2.csv
-        └── data3.csv
+Optical-Spectroscopy-Suite
+
+    README.md
+    Fabry_Perot_Analysis/
+        Fabry_Perot_Extraction.ipynb
+        sip_decoder.py
+  	    center.py
+        Lab_Data
+    LIBS_Spectral_Analysis/
+        main.ipynb
+        specline.csv (NIST Reference Database)
+        Datas/
+            data1.csv
+            data2.csv
+            data3.csv
 
 
 =======================================================================
@@ -51,7 +50,7 @@ Core Mathematical Features:
 
 =======================================================================
 
-🔥 Engine 2: Laser-Induced Breakdown Spectroscopy (LIBS)
+Engine 2: Laser-Induced Breakdown Spectroscopy (LIBS)
 Directory: /LIBS_Spectral_Analysis
 
 This pipeline processes raw emission spectra obtained from LIBS. It isolates sharp atomic emission lines superimposed on a large, slowly-varying plasma continuum, matching the isolated peaks to known atomic elements.
@@ -72,7 +71,7 @@ Workflow & Methodology:
 =======================================================================
 
 
-## ⚙️ Dependencies & Installation
+##  Dependencies & Installation
 
   This suite is entirely vectorized for rapid computational execution and relies on the Jupyter environment for interactive data visualization. Ensure the following scientific libraries are installed:
 
@@ -84,7 +83,7 @@ pip install numpy pandas matplotlib scipy jupyter
 
 
 
-🚀 Execution Guide
+## Execution Guide
 Because these analytical engines are built as Jupyter Notebooks (.ipynb), they are designed for interactive, cell-by-cell execution rather than background terminal processing. You can copy paste the cells in a .py file and run python3 ____.py if you prefer it.
 
   Step 1: Launch the Environment

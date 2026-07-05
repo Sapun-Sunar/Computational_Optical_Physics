@@ -39,7 +39,7 @@ cd Fabry_Perot_Analysis
 
 2) Execute the main pipeline:
 ```Bash
-   python3 main.py
+   python3 01_main.py
    ```
 * The engine will automatically call center.py to trigger the Visual HUD.
 
